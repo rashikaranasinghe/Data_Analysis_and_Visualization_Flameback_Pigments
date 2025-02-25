@@ -1,0 +1,9 @@
+name: "My_website"
+navbar:
+  title: "Data Visualization"
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "About"
+      href: about.html
+output_dir: docs
