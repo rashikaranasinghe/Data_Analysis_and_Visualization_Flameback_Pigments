@@ -12,4 +12,4 @@ This repository provides scripts for visualizing genomic, pigment biochemical, a
 
 ## Website  
 For detailed R scripts and interactive visualizations, please visit:  
-[Data Analysis and Visualization - Flameback]([https://rashikaranasinghe.github.io/Data_Analysis_and_Visualization_Flameback_Pigments/])  
+[Data Analysis and Visualization - Flameback](https://rashikaranasinghe.github.io/Data_Analysis_and_Visualization_Flameback_Pigments/)  
