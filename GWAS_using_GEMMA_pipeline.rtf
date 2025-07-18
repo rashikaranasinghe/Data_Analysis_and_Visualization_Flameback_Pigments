@@ -1,0 +1,403 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2761
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fmodern\fcharset0 Courier;}
+{\colortbl;\red255\green255\blue255;\red26\green26\blue26;\red0\green0\blue0;\red231\green62\blue255;
+\red251\green0\blue255;\red242\green104\blue255;\red36\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c13333\c13333\c13333;\cssrgb\c0\c1\c1;\cssrgb\c93328\c38659\c100000;
+\cssrgb\c100000\c7248\c100000;\cssrgb\c96901\c52715\c100000;\cssrgb\c4983\c100000\c100000;\cssrgb\c0\c0\c0;}
+\margl1440\margr1440\vieww23100\viewh19920\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs24 \cf2 \expnd0\expndtw0\kerning0
+#######################################################################################\
+############################### GWAS with GEMMA pipeline ##############################\
+#######################################################################################\
+\
+## written by Rashika W. Ranasinghe on 02nd February, 2023\
+## This file contains the pipeline for conducting Genome -Wide Association Study (GWAS) analysis related to this preprint:\
+\
+Rashika W. Ranasinghe, Jocelyn Hudon, Sampath Seneviratne, et al. Biochemical and Genomic Underpinnings of Carotenoid Color Variation across a Hybrid Zone between South Asian Flameback Woodpeckers. Authorea. January 09, 2025.\
+DOI: 10.22541/au.173643127.76349831/v1\
+\
+#### Prepare input VCF file\
+# VCF file should not contain indels, singletons and should contain only bi-allelic positions. \
+# Haplotypes should be filtered by their quality for individuals: GQ >= 25, DP>=3. \
+# Please note that step-by-step instructions for generating a VCF file from GBS data are available in the Dryad data repository associated with Ranasinghe et al., 2024 (https://doi.org/10.5061/dryad.6hdr7sr92).\
+\
+###### I) subset the VCF file and filter for above requirements \
+\
+# make the list of sample IDs that need to be included into the analysis \
+\
+cat > list_sampleIDs_to_keep_n.106.txt\
+------------------\
+woodpeckers_LN_RR_MD18SS03_Dino_R\
+woodpeckers_LN_RR_MH29SF02_Dino_H\
+woodpeckers_LN_RR_MH31SF01_Dino_R\
+woodpeckers_LN_RR_MH31SF02_Dino_R\
+woodpeckers_LN_RR_MI05SF04_Dino_R\
+woodpeckers_LN_RR_MI10SS01_Dino_Y\
+woodpeckers_LN_RR_MI10SS04_Dino_Y\
+woodpeckers_LN_RR_MI11SS01_Dino_Y\
+woodpeckers_LN_RR_MI19SF01_Dino_R\
+woodpeckers_LN_RR_MI19SF04_Dino_R\
+woodpeckers_LN_RR_MK13SF02_Dino_R\
+woodpeckers_LN_RR_MK13SF03_Dino_R\
+woodpeckers_LN_RR_MK13SF04_Dino_R\
+woodpeckers_LN_RR_MK14SF01_Dino_R\
+woodpeckers_LN_RR_NC23SS02_Dino_Y\
+woodpeckers_LN_RR_PC06SS01_Dino_H\
+woodpeckers_LN_RR_PD02RWR02_Dino_Y\
+woodpeckers_LN_RR_PH24RWR02_Dino_R\
+woodpeckers_LN_RR__Dino_MF11SS01\
+woodpeckers_LN_RR__Dino_MG11SF01\
+woodpeckers_LN_RR__Dino_MG28SF01\
+woodpeckers_LN_RR__Dino_MH23SF01\
+woodpeckers_LN_RR__Dino_MH29SF04\
+woodpeckers_LN_RR__Dino_MH29SF06\
+woodpeckers_LN_RR__Dino_MI05SF03\
+woodpeckers_LN_RR__Dino_MI10SS02\
+woodpeckers_LN_RR__Dino_MI19SF03\
+woodpeckers_LN_RR__Dino_MI21SF04\
+woodpeckers_LN_RR__Dino_NC15SS01\
+woodpeckers_LN_RR__Dino_NC22SS01\
+woodpeckers_LN_RR__Dino_PD01RWR01\
+woodpeckers_LN_RR__Dino_PH24RWR01\
+woodpeckers_LN_RR__Dino_PH24RWR03\
+woodpeckers_LN_RR__Dino_PI11RWR01\
+woodpeckers_LN_RR__Dino_PI11RWR02\
+woodpeckers_LN_RR__Dino_PJ02SS01\
+woodpeckers_LN_RR__Dino_PJ02SS03\
+woodpeckers_LN_RR__Dino_QI05SS02\
+woodpeckers_LN_RR__Dino_QI05SS03\
+woodpeckers_LN_RR__Dino_QJ14SS01\
+woodpeckers_LN_RR__Dino_QJ14SS02\
+woodpeckers_RR_GBS3_MH29SF01\
+woodpeckers_RR_GBS3_MI21SF01\
+woodpeckers_RR_GBS3_NB17SS01\
+woodpeckers_RR_GBS3_NC23SS01\
+woodpeckers_RR_GBS3_QI05SS01\
+woodpeckers_RR_GBS3_UC12RR01\
+woodpeckers_RR_GBS3_UC12RR02\
+woodpeckers_RR_GBS3_UC12RR03\
+woodpeckers_RR_GBS3_UC14RR04\
+woodpeckers_RR_GBS3_UC19RR01\
+woodpeckers_RR_GBS3_UC19RR02\
+woodpeckers_RR_GBS3_UC19RR03\
+woodpeckers_RR_GBS3_UC19RR04\
+woodpeckers_RR_GBS3_UC20RR01\
+woodpeckers_RR_GBS3_UC20RR02\
+woodpeckers_RR_GBS3_UC20RR03\
+woodpeckers_RR_GBS3_UC20RR04\
+woodpeckers_RR_GBS3_UC20RR05\
+woodpeckers_RR_GBS3_UC20RR06\
+woodpeckers_RR_GBS3_UC20RR07\
+woodpeckers_RR_GBS3_UC26RR01\
+woodpeckers_RR_GBS3_UC27RR01\
+woodpeckers_RR_GBS3_UC27RR02\
+woodpeckers_RR_GBS3_UC28RR01\
+woodpeckers_RR_GBS3_UC28RR02\
+woodpeckers_RR_GBS3_UC29RR01\
+woodpeckers_RR_GBS3_UC29RR02\
+woodpeckers_RR_GBS3_UC29RR03\
+woodpeckers_RR_GBS3_UC29RR04\
+woodpeckers_RR_GBS3_UC30RR01\
+woodpeckers_RR_GBS3_UC30RR02\
+woodpeckers_RR_GBS3_UC30RR03\
+woodpeckers_RR_GBS3_UC30RR04\
+woodpeckers_RR_GBS3_UC31RR01\
+woodpeckers_RR_GBS3_UC31RR02\
+woodpeckers_RR_GBS3_UD16RR01\
+woodpeckers_RR_GBS3_UD23RR01\
+woodpeckers_RR_GBS3_UD30RR01\
+woodpeckers_RR_GBS3_UD30RR02\
+woodpeckers_RR_GBS3_UD30RR03\
+woodpeckers_RR_GBS3_UD30RR04\
+woodpeckers_RR_GBS3_UE01RR01\
+woodpeckers_RR_GBS3_UE01RR02\
+woodpeckers_RR_GBS3_UE01RR03\
+woodpeckers_RR_GBS3_UE01RR04\
+woodpeckers_RR_GBS3_UE02RR01\
+woodpeckers_RR_GBS3_UE07RR01\
+woodpeckers_RR_GBS3_UE07RR02\
+woodpeckers_RR_GBS3_UE07RR03\
+woodpeckers_RR_GBS3_UE07RR04\
+woodpeckers_RR_GBS3_UE07RR05\
+woodpeckers_RR_GBS3_UE09RR01\
+woodpeckers_RR_GBS3_UE09RR02\
+woodpeckers_RR_GBS3_UE09RR03\
+woodpeckers_RR_GBS3_UF01SS01\
+woodpeckers_RR_GBS3_UF01SS02\
+woodpeckers_RR_GBS3_UF01SS03\
+woodpeckers_RR_GBS3_UF01SS04\
+woodpeckers_RR_GBS3_UF01SS05\
+woodpeckers_RR_GBS3_UF02SS01\
+woodpeckers_RR_GBS3_UF02SS02\
+woodpeckers_RR_GBS3_UF02SS03\
+woodpeckers_RR_GBS3_UF02SS04\
+woodpeckers_RR_GBS3_UF03RR01\
+woodpeckers_RR_GBS3_UF03RR02\
+-----ctrl+D----------\
+\
+# Subset the above listed individuals using bcftools\
+\
+bcftools view -S list_sampleIDs_to_keep_n.106.txt ../../combined_DW.chrom_150.N_2022_vcfs/DW.chrom_150.n_Oct.2022.genotypes.variant_only.whole_genome.noIndels_biallelic.GATKfiltered.maxmiss60.mac3.70pcntIndMiss.SNP30miss.recode.vcf > DW.pre.filtered_n.106.vcf\
+\
+\
+# Filter VCF file\
+\
+\pard\pardeftab720\partightenfactor0
+\cf3 vcftools --vcf DW.pre.filtered_n.106.vcf --mac 3 --min-alleles 2 --max-alleles 2 --minDP 3 --minGQ 25 --remove-indels --max-missing 0.4 --recode --recode-INFO-all --out DW.pre.filtered_n.106.mac3.biallelic.minDP3.minGQ25.NOindel.maxmiss0.4\
+\cf4 ----------------------------\
+After filtering, kept 106 out of 106 Individuals\
+Outputting VCF file...\
+After filtering, kept 406121 out of a possible 1251422 Sites\
+Run Time = 210.00 seconds\
+----------------------------\
+\pard\pardeftab720\partightenfactor0
+\cf2 \
+\
+# Impute missing data in the filtered VCF file using BIMBAM \
+\
+# 1st convert VCF file to PLINK format. Next use PLINK to make BIMBAM input files \
+\pard\pardeftab720\partightenfactor0
+\cf3 \
+#### Convert VCF to PLINK format\
+\
+vcftools --vcf DW.pre.filtered_n.106.mac3.biallelic.minDP3.minGQ25.NOindel.maxmiss0.4.recode.vcf --plink --out DW.pre.filtered_n.106.mac3.biallelic.minDP3.minGQ25.NOindel.maxmiss0.4\
+\pard\pardeftab720\partightenfactor0
+\cf5 --------------\
+Done.\
+After filtering, kept 406121 out of a possible 406121 Sites\
+Run Time = 15.00 seconds\
+# this produced .map and .ped files\
+---------------\cf3 \
+\
+#### Make BIMBAM input files using PLINK\
+/Linux/bin/plink_1.9 --file DW.pre.filtered_n.106.mac3.biallelic.minDP3.minGQ25.NOindel.maxmiss0.4 --recode bimbam --out DW.pre.filtered_n.106.mac3.biallelic.minDP3.minGQ25.NOindel.maxmiss0.4\
+\cf5 ---------------------------\
+PLINK v1.90b2? 64-bit (1 Jul 2014)         https://www.cog-genomics.org/plink2\
+(C) 2005-2014 Shaun Purcell, Christopher Chang   GNU General Public License v3\
+Logging to DW.pre.filtered_n.106.mac3.biallelic.minDP3.minGQ25.NOindel.maxmiss0.4.log.\
+1483337 MB RAM detected; reserving 741668 MB for main workspace.\
+.ped scan complete (for binary autoconversion).\
+Performing single-pass .bed write (406121 variants, 106 people).\
+--file:\
+DW.pre.filtered_n.106.mac3.biallelic.minDP3.minGQ25.NOindel.maxmiss0.4-temporary.bed\
++\
+DW.pre.filtered_n.106.mac3.biallelic.minDP3.minGQ25.NOindel.maxmiss0.4-temporary.bim\
++\
+DW.pre.filtered_n.106.mac3.biallelic.minDP3.minGQ25.NOindel.maxmiss0.4-temporary.fam\
+written.\
+406121 variants loaded from .bim file.\
+106 people (0 males, 0 females, 106 ambiguous) loaded from .fam.\
+Ambiguous sex IDs written to\
+DW.pre.filtered_n.106.mac3.biallelic.minDP3.minGQ25.NOindel.maxmiss0.4.nosex .\
+Using 1 thread (no multithreaded calculations invoked).\
+Calculating allele frequencies... done.\
+Total genotyping rate is 0.655823.\
+406121 variants and 106 people pass filters and QC.\
+Note: No phenotypes present.\
+--recode bimbam to\
+DW.pre.filtered_n.106.mac3.biallelic.minDP3.minGQ25.NOindel.maxmiss0.4.recode.geno.txt\
++\
+DW.pre.filtered_n.106.mac3.biallelic.minDP3.minGQ25.NOindel.maxmiss0.4.recode.pheno.txt\
++\
+DW.pre.filtered_n.106.mac3.biallelic.minDP3.minGQ25.NOindel.maxmiss0.4.recode.pos.txt\
+... done.\
+# This produced .geno.txt, .pheno.txt and .pos.txt files\
+---------------------------\
+\pard\pardeftab720\partightenfactor0
+\cf3 \
+ \
+\
+# For imputation, BIMBAM requires a phenotype file and assumes that phenotype data follow a normal distribution (homozygous reference, homozygous alternative, and heterozygous). If the data deviate from normality, a transformation should be applied to normalize them.  If the data are not normally distributed, use data transformation to make them normal distributed. Since my phenotype data seems normally distributed enough. I do not use transformation to make them normalize\
+\
+# Phenotype values should be in as same sample order as in vcf files. \
+# to get the order of individuals from the VCF file\
+# bcftools query -l DW.pre.filtered_n.106.mac3.biallelic.minDP3.minGQ25.NOindel.maxmiss0.4.recode.vcf > ind.order.n106.txt\
+# I checked the sample order in an excel file\
+\
+# Make the phenotype file for the imputation\
+\
+cat > LAB.untransformed.PC1.n106.txt\
+-------------------\
+-1.213723997\
+-0.201795847\
+-1.974678864\
+-1.578153877\
+-2.06157339\
+0.99519838\
+2.418909551\
+0.802644315\
+-0.454419283\
+-1.149456514\
+-1.621578148\
+-1.685705797\
+-1.961446891\
+-2.325887198\
+0.532642934\
+-0.873659008\
+1.726027787\
+-0.837831276\
+2.762573485\
+-1.211666653\
+0.965006081\
+-1.563008666\
+-0.681441025\
+0.336402229\
+-1.702753817\
+2.112940603\
+-0.877366505\
+-0.397815178\
+1.648570042\
+0.655241942\
+-0.101566953\
+-0.30546488\
+-1.279729328\
+-1.882163603\
+-1.882163603\
+-0.305573431\
+-1.498782894\
+-0.737813328\
+2.375439296\
+-0.356556802\
+1.197266493\
+-1.389317737\
+-1.247690631\
+2.386680764\
+0.26473018\
+0.723438295\
+-0.815208505\
+-0.635819575\
+-1.884055985\
+-1.138137779\
+2.054433688\
+3.128597105\
+1.786257849\
+2.418842711\
+0.151392564\
+1.176454564\
+2.424473873\
+0.936712321\
+1.960026046\
+0.123025808\
+2.146948948\
+-1.882163603\
+-0.828352783\
+-0.926566045\
+0.746127905\
+-0.562136166\
+-1.053058367\
+-1.03230285\
+-0.841595184\
+-0.456461927\
+0.085351678\
+-0.573465329\
+-1.200393901\
+-0.873659008\
+-0.635830002\
+-1.055069728\
+-0.794375721\
+1.074590218\
+1.390129626\
+0.974540986\
+1.867588053\
+3.147537507\
+1.421894809\
+1.214304085\
+2.214882216\
+3.447710331\
+1.697692315\
+0.746138333\
+1.140641532\
+0.366759489\
+1.159571506\
+-1.147486865\
+1.803274586\
+1.231253982\
+1.163387554\
+-1.366592571\
+-0.726375614\
+-1.360971836\
+-1.421412844\
+-1.321275917\
+-1.098473143\
+-1.174048934\
+-1.778221057\
+-1.470426566\
+-1.49499813\
+-1.321286345\
+------ctrl+D-------\
+\
+\
+##  Run BIMBAM to impute missing genotype data\
+\
+../bimbam/bimbam -g DW.pre.filtered_n.106.mac3.biallelic.minDP3.minGQ25.NOindel.maxmiss0.4.recode.geno.txt -p ./LAB.untransformed.PC1.n106.txt -e 10 -s 20 -c 15 --nobf -wmg -wbg -wgd -o DW.pre.filtered_n.106.mac3.biallelic.minDP3.minGQ25.NOindel.maxmiss0.4.BIMBAMimputedPC1untrnfm\
+\pard\pardeftab720\partightenfactor0
+\cf5 ------------\
+Mean genotype files will be saved into the output folder\
+------------\cf6 \
+\pard\pardeftab720\partightenfactor0
+\cf2 # this produced a mean genotype file called \'93DW.pre.filtered_n.106.mac3.biallelic.minDP3.minGQ25.NOindel.maxmiss0.4.BIMBAMimputedPC1untrnfm.mean.genotype.txt\'94 I use this file as the genotype input file for GEMMA \
+\
+\pard\pardeftab720\partightenfactor0
+\cf3 \
+\
+\
+############### RUN GEMMA ######################\
+\
+###### Make the relatedness matrix \
+../gemma-programme/gemma-0.98.1 -g output/DW.pre.filtered_n.106.mac3.biallelic.minDP3.minGQ25.NOindel.maxmiss0.4.BIMBAMimputedPC1untrnfm.mean.genotype.txt -p ./LAB.untransformed.PC1.n106.txt -gk 1 -o DW.pre.filtered_n.106.mac3.biallelic.minDP3.minGQ25.NOindel.maxmiss0.4.BIMBAMimputedPC1untrnfm\
+\pard\pardeftab720\partightenfactor0
+\cf5 ---------------------------\
+GEMMA 0.98.1 (2018-12-10) by Xiang Zhou and team (C) 2012-2018\
+Reading Files ... \
+## number of total individuals = 106\
+## number of analyzed individuals = 106\
+## number of covariates = 1\
+## number of phenotypes = 1\
+## number of total SNPs/var        =   406121\
+## number of analyzed SNPs         =   406096\
+Calculating Relatedness Matrix ... \
+================================================== 100%\
+**** INFO: Done.\
+------------------------\cf4 -----\
+\
+\pard\pardeftab720\partightenfactor0
+\cf7 \
+\pard\pardeftab720\partightenfactor0
+\cf8 \
+############# Run GEMMA uLMM using Wald test to calculate p-values ##################\cf3 \
+####### Run GEMMA uLMM \
+../gemma-programme/gemma-0.98.1 -g output/DW.pre.filtered_n.106.mac3.biallelic.minDP3.minGQ25.NOindel.maxmiss0.4.BIMBAMimputedPC1untrnfm.mean.genotype.txt -p ./LAB.untransformed.PC1.n106.txt -k output/DW.pre.filtered_n.106.mac3.biallelic.minDP3.minGQ25.NOindel.maxmiss0.4.BIMBAMimputedPC1untrnfm.cXX.txt -lmm 1 -o DW.pre.filtered_n.106.mac3.biallelic.minDP3.minGQ25.NOindel.maxmiss0.4.BIMBAMimputedPC1untrnfm.lmm1\
+\pard\pardeftab720\partightenfactor0
+\cf5 ------------------\
+GEMMA 0.98.1 (2018-12-10) by Xiang Zhou and team (C) 2012-2018\
+Reading Files ... \
+## number of total individuals = 106\
+## number of analyzed individuals = 106\
+## number of covariates = 1\
+## number of phenotypes = 1\
+## number of total SNPs/var        =   406121\
+## number of analyzed SNPs         =   406096\
+Start Eigen-Decomposition...\
+pve estimate =0.871368\
+se(pve) =0.111058\
+================================================== 100%\
+**** INFO: Done.\
+---------------------\
+\pard\pardeftab720\partightenfactor0
+\cf3 \
+\
+#### Change chromosome names of the output file ######\
+# To generate the Manhattan plot, all chromosomes must be represented as integers. Therefore, chromosome \'93names\'94 are changed to numbers. \
+# I have labeled chromosomes Z and W as integers and all other bigger contig names were labeled as 47.\
+# The chromosome numbers for each contig across all configurations can be found here: https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_014839835.1/.\
+\
+cat output/DW.pre.filtered_n.106.mac3.biallelic.minDP3.minGQ25.NOindel.maxmiss0.4.BIMBAMimputedPC1untrnfm.lmm1.assoc.txt | sed 's/CM025994.1/1/g;s/CM025995.1/2/g;s/CM025996.1/3/g;s/CM025997.1/4/g;s/CM025998.1/5/g;s/CM025999.1/6/g;s/CM026000.1/7/g;s/CM026001.1/8/g;s/CM026002.1/9/g;s/CM026003.1/10/g;s/CM026004.1/11/g;s/CM026005.1/12/g;s/CM026006.1/13/g;s/CM026007.1/14/g;s/CM026008.1/15/g;s/CM026009.1/16/g;s/CM026010.1/17/g;s/CM026011.1/18/g;s/CM026012.1/19/g;s/CM026013.1/20/g;s/CM026014.1/21/g;s/CM026015.1/22/g;s/CM026016.1/23/g;s/CM026017.1/24/g;s/CM026018.1/25/g;s/CM026019.1/26/g;s/CM026020.1/27/g;s/CM026021.1/28/g;s/CM026022.1/29/g;s/CM026023.1/30/g;s/CM026024.1/31/g;s/CM026025.1/32/g;s/CM026026.1/33/g;s/CM026027.1/34/g;s/CM026028.1/35/g;s/CM026029.1/36/g;s/CM026030.1/37/g;s/CM026031.1/38/g;s/CM026032.1/39/g;s/CM026033.1/40/g;s/CM026034.1/41/g;s/CM026035.1/42/g;s/CM026036.1/43/g;s/CM026037.1/44/g;s/CM026038.1/45/g;s/CM026039.1/46/g;\cf2 s/JACNMV010000127.1/47/g;s/CM026032.1/47/g;s/CM026033.1/47/g;s/CM026034.1/47/g;s/JACNMV010000131.1/47/g;s/JACNMV010000129.1/47/g;s/CM026035.1/47/g;s/CM026036.1/47/g;s/CM026037.1/47/g;s/CM026038.1/47/g;s/JACNMV010000123.1/47/g;s/JACNMV010000124.1/47/g;s/CM026039.1/47/g;s/JACNMV010000125.1/47/g;s/JACNMV010000001.1/47/g;s/JACNMV010000002.1/47/g;s/JACNMV010000004.1/47/g;s/JACNMV010000005.1/47/g;s/JACNMV010000010.1/47/g;s/JACNMV010000012.1/47/g;s/JACNMV010000019.1/47/g;s/JACNMV010000023.1/47/g;s/JACNMV010000024.1/47/g;s/JACNMV010000025.1/47/g;s/JACNMV010000028.1/47/g;s/JACNMV010000030.1/47/g;s/JACNMV010000031.1/47/g;s/JACNMV010000035.1/47/g;s/JACNMV010000036.1/47/g;s/JACNMV010000040.1/47/g;s/JACNMV010000045.1/47/g;s/JACNMV010000048.1/47/g;s/JACNMV010000051.1/47/g;s/JACNMV010000063.1/47/g;s/JACNMV010000065.1/47/g;s/JACNMV010000068.1/47/g;s/JACNMV010000074.1/47/g;s/JACNMV010000080.1/47/g;s/JACNMV010000086.1/47/g;s/JACNMV010000098.1/47/g;s/JACNMV010000109.1/47/g;s/JACNMV010000110.1/47/g;s/JACNMV010000111.1/47/g;s/JACNMV010000112.1/47/g;s/JACNMV010000130.1/47/g;s/JACNMV010000132.1/47/g;s/JACNMV010000133.1/47/g;s/JACNMV010000134.1/47/g;s/JACNMV010000137.1/47/g;s/JACNMV010000138.1/47/g;s/JACNMV010000140.1/47/g;s/JACNMV010000142.1/47/g;s/JACNMV010000141.1/47/g;s/JACNMV010000143.1/47/g;s/JACNMV010000144.1/47/g;s/JACNMV010000145.1/47/g;s/JACNMV010000149.1/47/g;s/JACNMV010000150.1/47/g;s/JACNMV010000151.1/47/g;s/JACNMV010000152.1/47/g;s/JACNMV010000154.1/47/g;s/JACNMV010000156.1/47/g;s/JACNMV010000157.1/47/g;s/JACNMV010000159.1/47/g;s/JACNMV010000160.1/47/g;s/JACNMV010000161.1/47/g;s/JACNMV010000162.1/47/g;s/JACNMV010000165.1/47/g;s/JACNMV010000166.1/47/g;s/JACNMV010000167.1/47/g;s/JACNMV010000168.1/47/g;s/JACNMV010000170.1/47/g;s/JACNMV010000171.1/47/g;s/JACNMV010000174.1/47/g;s/JACNMV010000176.1/47/g;s/JACNMV010000177.1/47/g;s/JACNMV010000178.1/47/g;s/JACNMV010000179.1/47/g;s/JACNMV010000037.1/47/g;s/JACNMV010000020.1/47/g;s/JACNMV010000034.1/47/g;s/JACNMV010000056.1/47/g;s/JACNMV010000014.1/47/g;s/JACNMV010000153.1/47/g\cf3 ' > output/DW.pre.filtered_n.106.mac3.biallelic.minDP3.minGQ25.NOindel.maxmiss0.4.BIMBAMimputedPC1untrnfm.lmm1.chronNumEdited.assoc.txt\
+\
+\
+You can find the R script demonstrating how to create the Manhattan plot using this output file at:\
+https://rashikaranasinghe.github.io/Data_Analysis_and_Visualization_Flameback_Pigments/\
+\
+}
